@@ -1,297 +1,233 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gioco di Capodanno</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            text-align: center;
-            padding: 50px;
-        }
-        #game-container {
-            display: none;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 10px;
-            cursor: pointer;
-        }
-        #challenge-result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gioco di Capodanno</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      text-align: center;
+      padding: 50px;
+    }
+    #game-container, #challenge-container {
+      display: none;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    #challenge-result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+  </style>
 </head>
 <body>
-    <h1>Benvenuti al Gioco di Capodanno!</h1>
+
+  <h1>Benvenuti al Gioco di Capodanno!</h1>
+
+  <div id="name-selection-container" class="container">
     <p>Inserisci il tuo nome da supereroe:</p>
-    
     <select id="name-selector">
-        <option value="">Seleziona un nome...</option>
-        <option value="Angelo">Angelo</option>
-        <option value="Matilde">Matilde</option>
-        <option value="Eleonora">Eleonora</option>
-        <option value="Rita">Rita</option>
-        <option value="Federico">Federico</option>
-        <option value="Rebecca">Rebecca</option>
-        <option value="Alessandro">Alessandro</option>
-        <option value="Francesco">Francesco</option>
-        <option value="Giulia">Giulia</option>
+      <option value="">Seleziona un nome...</option>
+      <option value="Angelo">Angelo</option>
+      <option value="Matilde">Matilde</option>
+      <option value="Eleonora">Eleonora</option>
+      <option value="Rita">Rita</option>
+      <option value="Federico">Federico</option>
+      <option value="Rebecca">Rebecca</option>
+      <option value="Alessandro">Alessandro</option>
+      <option value="Francesco">Francesco</option>
+      <option value="Giulia">Giulia</option>
     </select>
     <br>
     <button onclick="startGame()">Inizia il Gioco</button>
+  </div>
 
-    <div id="game-container">
-        <h2 id="selected-name"></h2>
-        <button onclick="acceptChallenge()">Accetta la Sfida</button>
-        <button onclick="declineChallenge()">Rifiuta la Sfida</button>
-        <p id="challenge-result"></p>
-    </div>
+  <div id="game-container" class="container">
+    <h2 id="selected-name"></h2>
+    <button onclick="startChallenge()">Accetta la Sfida</button>
+    <button onclick="declineChallenge()">Rifiuta la Sfida</button>
+  </div>
 
-    <script>
-        const challenges = [
-            "Fai una camminata da modella intorno alla stanza.",
-            "Racconta una barzelletta e fai ridere almeno tre persone.",
-            "Fai finta di essere un cantante rock per 30 secondi.",
-            "Imita un animale a scelta per un minuto.",
-            "Canta la tua canzone preferita senza musica.",
-            "Parla in una lingua inventata per due minuti.",
-            "Racconta un aneddoto divertente che ti è capitato.",
-            "Fai un ballo come se fossi in discoteca.",
-            "Completa uno scioglilingua senza sbagliare.",
-            "Descrivi il tuo cibo preferito in modo teatrale.",
-            "Fai 10 flessioni.",
-            "Balla come un ballerino professionista per 30 secondi.",
-            "Racconta una storia inventata, ma senza usare la lettera 'A'.",
-            "Fai 10 salti sul posto.",
-            "Canta una canzone senza parole, solo suoni.",
-            "Imita un film famoso per 30 secondi.",
-            "Fai una ruota per la stanza.",
-            "Fai 10 squat.",
-            "Descrivi un sogno strano che hai fatto.",
-            "Canta una canzone sotto la doccia (fai finta di essere sotto la doccia).",
-            "Balla come se fossi in un video musicale.",
-            "Imita un personaggio famoso.",
-            "Fai 15 jumping jacks.",
-            "Imita qualcuno che conosci bene.",
-            "Fai una camminata buffa fino a fare una figura.",
-            "Cerca di ridere senza fermarti per un minuto.",
-            "Fai 10 flessioni sul pavimento.",
-            "Imita un clown per un minuto.",
-            "Fai il tuo miglior salto della corda invisibile.",
-            "Crea una storia di un minuto usando solo oggetti che hai vicino.",
-            "Fai un'imitazione di un insegnante che conosci.",
-            "Canta una canzone senza muovere le labbra.",
-            "Dai un abbraccio a un oggetto a caso per 30 secondi.",
-            "Fai il verso di un animale che ti piace.",
-            "Esegui 5 esercizi di stretching.",
-            "Fai un'improvvisazione di danza per 30 secondi.",
-            "Crea un personaggio immaginario e agisci come lui per un minuto.",
-            "Prova a cantare senza aprire la bocca.",
-            "Fai una corsa sul posto per 30 secondi.",
-            "Canta una canzone che ti piace, ma con la voce sott'acqua (fai finta).",
-            "Imita un robot per 30 secondi.",
-            "Fai 10 giravolte senza fermarti.",
-            "Imita un professore di matematica.",
-            "Fai una mimica di una scena di un film.",
-            "Fai finta di essere in un videogame e recita una scena.",
-            "Imita un personaggio dei cartoni animati.",
-            "Fai 20 sit-ups.",
-            "Imita un supereroe famoso.",
-            "Prova a rimanere in equilibrio su un piede per 1 minuto.",
-            "Fai una piroetta come una ballerina.",
-            "Balla come un ballerino di breakdance per 30 secondi.",
-            "Canta una canzone come se fossi un robot.",
-            "Parla in un accento straniero per 2 minuti.",
-            "Fai 20 burpees.",
-            "Canta una canzone senza usare le parole.",
-            "Imita un animale esotico per un minuto.",
-            "Canta come un operaio di un cantiere.",
-            "Prova a fare una magia (fai finta di fare magie).",
-            "Fai una battuta e cerca di far ridere tutti.",
-            "Fai un giro su te stesso per 30 secondi.",
-            "Prova a cantare a testa in giù (inclinato).",
-            "Fai 10 addominali.",
-            "Imita una persona che conosci bene.",
-            "Prova a camminare all'indietro senza guardare.",
-            "Balla come se fossi un robot per 30 secondi.",
-            "Imita un venditore ambulante.",
-            "Fai 15 flessioni con le mani a distanza.",
-            "Canta in modo strano, come se avessi il raffreddore.",
-            "Fai 10 sit-up con un piede sollevato.",
-            "Canta una canzone come se fossi sotto la pioggia.",
-            "Fai il verso di un uccello per 30 secondi.",
-            "Fai il verso di un cagnolino.",
-            "Prova a saltare il più alto possibile.",
-            "Imita un personaggio delle fiabe.",
-            "Canta una canzone come se fossi un cantante rock.",
-            "Racconta una storia con una voce ridicola.",
-            "Fai il verso di un pinguino.",
-            "Fai il verso di un elefante.",
-            "Fai una dichiarazione d'amore al primo oggetto che trovi.",
-            "Imita un pesce fuori dall'acqua.",
-            "Fai una danza strana per 30 secondi.",
-            "Fai il verso di un gallo.",
-            "Fai 15 squat con le mani dietro la testa.",
-            "Imita una persona famosa.",
-            "Fai 10 giri su te stesso.",
-            "Fai un'inversione completa (come una ruota).",
-            "Fai una camminata in punta di piedi.",
-            "Prova a saltare sul posto senza fermarti per 30 secondi.",
-            "Fai finta di essere un'ape e ronzare per un minuto.",
-            "Fai un passo di danza balinese.",
-            "Canta una canzone in una lingua inventata.",
-            "Fai un'acrobazia (fai finta di essere un acrobata).",
-            "Fai un passo di danza giapponese.",
-            "Imita una star del cinema.",
-            "Fai una canzone improvvisata.",
-            "Balla con le mani alzate.",
-            "Fai una performance da mimo.",
-            "Canta come se fossi un pesce.",
-            "Canta come se fossi una sirena.",
-            "Fai finta di volare per 1 minuto.",
-            "Fai un ballo come se fossi in un film d'azione.",
-            "Imita un personaggio di un videogioco.",
-            "Fai il verso di un maiale.",
-            "Fai 10 flessioni con le gambe larghe.",
-            "Prova a fare una pirouette.",
-            "Imita un cantante famoso per 30 secondi.",
-            "Fai una piroetta come una ballerina.",
-            "Fai 10 salti sul posto.",
-            "Imita un astronauta.",
-            "Fai un passo di danza come un ballerino professionista.",
-            "Canta in modo esagerato come un cantante lirico.",
-            "Parla come un personaggio famoso per 1 minuto.",
-            "Prova a fare il verso di un animale esotico.",
-            "Canta con la voce di un bambino.",
-            "Fai il verso di un serpente.",
-            "Imita una scena di un film romantico.",
-            "Fai 15 jumping jacks.",
-            "Parla con una voce bassissima.",
-            "Fai un'imitazione di una persona che conosci.",
-            "Balla con un oggetto in mano.",
-            "Fai finta di essere in una pubblicità di un prodotto.",
-            "Imita un ballerino di salsa.",
-            "Fai 20 addominali.",
-            "Balla come se fossi in una guerra di danza.",
-            "Canta come se fossi un mimo.",
-            "Fai 10 piroette.",
-            "Prova a cantare come se fossi in un musical.",
-            "Fai un ballo esagerato.",
-            "Canta come se fossi in un film d'animazione.",
-            "Imita un personaggio di un cartone animato."
-        ];
+  <div id="challenge-container" class="container">
+    <h2>La tua sfida è pronta!</h2>
+    <p id="challenge-result"></p>
+    <button onclick="backToSelection()">Torna alla selezione del nome</button>
+  </div>
 
-        const penalties = [
-            "Tieni la gamba alzata fino a che non ritocca a te.",
-            "Fai 15 flessioni.",
-            "Cammina come un robot per 1 minuto.",
-            "Fai 20 jumping jacks.",
-            "Tieni una posizione di yoga per 30 secondi.",
-            "Balla per 1 minuto senza fermarti.",
-            "Fai 10 squat.",
-            "Parla in un accento straniero per 2 minuti.",
-            "Fai una corsa sul posto per 1 minuto.",
-            "Tenta di fare una ruota.",
-            "Balla come se fossi in un videoclip.",
-            "Imita un animale per 30 secondi.",
-            "Fai 10 giri su te stesso.",
-            "Cammina sui talloni per 1 minuto.",
-            "Fai 15 sit-ups.",
-            "Balla come se nessuno ti guardasse.",
-            "Fai 10 flessioni in 30 secondi.",
-            "Parla in rima per 1 minuto.",
-            "Tenta di fare il moonwalk per 1 minuto.",
-            "Fai 20 addominali.",
-            "Fai 15 salti con la corda invisibile.",
-            "Imita un personaggio famoso.",
-            "Fai una capriola.",
-            "Fai 10 flessioni su una gamba.",
-            "Tenta di fare una piroetta.",
-            "Prova a saltare in alto come se stessi volando.",
-            "Fai 10 salti in lungo.",
-            "Fai il verso di un uccello.",
-            "Fai una ruota con un piede sollevato.",
-            "Fai 10 sit-ups con una mano dietro la testa.",
-            "Fai un giro completo su te stesso.",
-            "Fai 5 giravolte.",
-            "Prova a fare un salto mortale (fai finta).",
-            "Fai 20 flessioni.",
-            "Prova a restare in equilibrio su una gamba.",
-            "Fai 10 piegamenti.",
-            "Prova a fare 10 salti in alto.",
-            "Fai 10 ginocchia al petto.",
-            "Fai 20 jumping jacks.",
-            "Canta una canzone mentre fai 10 flessioni.",
-            "Fai 15 squat con le mani dietro la testa.",
-            "Fai 5 capriole.",
-            "Fai un ballo strano per 1 minuto.",
-            "Prova a fare il passo del robot.",
-            "Fai 5 salti mortali (fai finta).",
-            "Parla come un personaggio di un cartone animato.",
-            "Prova a cantare con la bocca chiusa.",
-            "Fai 10 salti laterali.",
-            "Tenta di fare 10 salti in avanti.",
-            "Fai 10 sollevamenti.",
-            "Prova a stare in equilibrio su un piede per 1 minuto.",
-            "Canta una canzone in una lingua inventata.",
-            "Fai 20 piegamenti.",
-            "Prova a ballare con le mani.",
-            "Fai una gara di corsa sul posto per 1 minuto.",
-            "Fai 10 piegamenti sulle ginocchia.",
-            "Fai 10 flessioni con un piede sollevato.",
-            "Fai 15 giri su te stesso.",
-            "Fai 15 sit-ups con il braccio destro alzato.",
-            "Prova a camminare sui talloni.",
-            "Fai 10 squat con le mani in alto.",
-            "Fai una corsa veloce intorno alla stanza.",
-            "Imita un'onda per 1 minuto.",
-            "Fai 20 flessioni sul pavimento.",
-            "Fai 15 piegamenti sulle ginocchia.",
-            "Prova a fare 10 piroette.",
-            "Fai 10 flessioni laterali.",
-            "Fai 10 salti con il ginocchio al petto.",
-            "Fai 5 capriole.",
-            "Prova a saltare come un coniglio.",
-            "Fai 15 jumping jacks.",
-            "Fai 10 sollevamenti sulle gambe.",
-            "Fai 10 capriole indietro.",
-            "Imita una rana per 1 minuto.",
-            "Prova a fare 15 flessioni su una gamba.",
-            "Fai 5 salti con il busto dritto.",
-            "Fai 10 salti con le mani dietro la testa.",
-            "Prova a fare il cammino del criceto.",
-            "Fai 20 sit-ups con i piedi sollevati.",
-            "Fai 10 squat con una gamba sollevata.",
-            "Fai 10 giravolte.",
-            "Prova a fare 10 piegamenti al muro.",
-            "Fai 10 flessioni come un ninja."
-        ];
+  <script>
+    const challenges = {
+      "Angelo": [
+        "Angelo, fai 10 flessioni mentre canti una canzone a caso.",
+        "Angelo, imita un pugile per 30 secondi.",
+        "Angelo, fai 20 salti mentre ripeti il tuo nome ad alta voce.",
+        "Angelo, racconta una barzelletta e cerca di far ridere almeno 3 persone.",
+        "Angelo, fai una camminata da modella per 1 minuto.",
+        "Angelo, imita un astronauta per 1 minuto.",
+        "Angelo, fai il verso di un drago per 30 secondi.",
+        "Angelo, cammina come un robot per 1 minuto.",
+        "Angelo, fai 20 jumping jacks.",
+        "Angelo, prova a fare il moonwalk per 1 minuto.",
+        "Angelo, fai una danza dei cartoni animati per 1 minuto.",
+        "Angelo, racconta una storia inventata in 2 minuti.",
+        "Angelo, fai 15 piegamenti sulle braccia.",
+        "Angelo, prova a fare una capriola.",
+        "Angelo, fai 10 salti con le ginocchia al petto."
+      ],
+      "Matilde": [
+        "Matilde, fai 15 salti sul posto mentre canti una canzone.",
+        "Matilde, racconta una storia assurda come se fossi una narratrice professionista.",
+        "Matilde, fai 10 squat con le mani in testa.",
+        "Matilde, fai il verso di un animale esotico per 1 minuto.",
+        "Matilde, balla come se fossi in una pubblicità di cibo per bambini.",
+        "Matilde, cammina come un dinosauro per 1 minuto.",
+        "Matilde, fai 20 jumping jacks e poi corri sul posto per 30 secondi.",
+        "Matilde, prova a fare una capriola.",
+        "Matilde, racconta una barzelletta in rima.",
+        "Matilde, balla il cha-cha-cha per 1 minuto.",
+        "Matilde, fai 15 piegamenti sulle braccia mentre parli come un alieno.",
+        "Matilde, salta come una rana per 1 minuto.",
+        "Matilde, fai il verso di un pollo per 30 secondi.",
+        "Matilde, prova a fare il moonwalk per 1 minuto.",
+        "Matilde, fai una corsa sul posto per 2 minuti."
+      ],
+      "Eleonora": [
+        "Eleonora, fai 15 flessioni mentre canti in modo esagerato.",
+        "Eleonora, balla come un ballerino professionista per 1 minuto.",
+        "Eleonora, imita un personaggio famoso per 30 secondi.",
+        "Eleonora, fai 20 addominali mentre parli come un robot.",
+        "Eleonora, fai una camminata da modella per 1 minuto.",
+        "Eleonora, canta una canzone mentre fai 10 flessioni.",
+        "Eleonora, fai 15 piroette.",
+        "Eleonora, prova a fare una ruota.",
+        "Eleonora, prova a fare il moonwalk per 1 minuto.",
+        "Eleonora, fai 10 salti con le mani dietro la testa.",
+        "Eleonora, prova a fare un backflip.",
+        "Eleonora, racconta una barzelletta ridicola.",
+        "Eleonora, fai 20 salti a rana.",
+        "Eleonora, cammina come un criceto per 1 minuto.",
+        "Eleonora, balla con le mani dietro la testa per 1 minuto."
+      ],
+      "Rita": [
+        "Rita, fai 10 salti in alto mentre urli il tuo nome.",
+        "Rita, balla come un mimo per 1 minuto.",
+        "Rita, fai 15 sit-ups mentre parli in un accento straniero.",
+        "Rita, canta una canzone come se fossi un cantante lirico.",
+        "Rita, fai 20 jumping jacks.",
+        "Rita, imita un personaggio di un film famoso.",
+        "Rita, fai il verso di un cane per 1 minuto.",
+        "Rita, fai 10 squat con le mani dietro la testa.",
+        "Rita, fai 20 salti sul posto.",
+        "Rita, balla come se fossi in una gara di danza.",
+        "Rita, cammina come un elefante per 1 minuto.",
+        "Rita, fai il verso di un uccello per 1 minuto.",
+        "Rita, racconta una barzelletta in rima.",
+        "Rita, balla il flamenco per 1 minuto.",
+        "Rita, fai 20 flessioni."
+      ],
+      // Aggiungi qui sfide per gli altri nomi
+    };
 
-        function startGame() {
-            let selectedName = document.getElementById("name-selector").value;
-            if (selectedName) {
-                document.getElementById("selected-name").innerText = `${selectedName}, sei pronto per la sfida!`;
-                document.getElementById("game-container").style.display = "block";
-            } else {
-                alert("Per favore, scegli un nome da supereroe!");
-            }
-        }
+    const penalties = {
+      "Angelo": [
+        "Angelo, tieni la gamba alzata per 30 secondi.",
+        "Angelo, fai 15 flessioni.",
+        "Angelo, cammina sui talloni per 1 minuto.",
+        "Angelo, fai 20 jumping jacks.",
+        "Angelo, tieni una posizione di yoga per 30 secondi.",
+        "Angelo, balla per 1 minuto senza fermarti.",
+        "Angelo, fai 10 squat.",
+        "Angelo, parla in un accento straniero per 2 minuti.",
+        "Angelo, fai 15 salti con la corda invisibile.",
+        "Angelo, fai 10 capriole.",
+        "Angelo, salta come un canguro per 1 minuto.",
+        "Angelo, fai 10 piegamenti sulle ginocchia.",
+        "Angelo, fai 15 flessioni con una mano sollevata.",
+        "Angelo, canta una canzone come se fossi in un'opera teatrale.",
+        "Angelo, fai 20 piegamenti sulle braccia."
+      ],
+      "Matilde": [
+        "Matilde, fai 15 flessioni in 30 secondi.",
+        "Matilde, balla come se fossi in un videoclip.",
+        "Matilde, cammina come un robot per 1 minuto.",
+        "Matilde, fai 20 addominali.",
+        "Matilde, tieni una posizione di yoga per 30 secondi.",
+        "Matilde, fai 10 salti con le ginocchia al petto.",
+        "Matilde, prova a fare una capriola.",
+        "Matilde, balla come se fossi un mimo per 1 minuto.",
+        "Matilde, fai 15 salti sul posto.",
+        "Matilde, fai 20 piegamenti sulle braccia.",
+        "Matilde, tieni un piede sollevato per 30 secondi.",
+        "Matilde, fai 10 piroette.",
+        "Matilde, salta come una rana per 1 minuto.",
+        "Matilde, fai il verso di un animale per 30 secondi.",
+        "Matilde, fai 10 squat."
+      ],
+      "Eleonora": [
+        "Eleonora, fai 20 flessioni.",
+        "Eleonora, balla come una star del pop per 1 minuto.",
+        "Eleonora, fai 15 piegamenti sulle braccia.",
+        "Eleonora, imita un animale esotico per 1 minuto.",
+        "Eleonora, fai 10 salti come una rana.",
+        "Eleonora, tieni il braccio sollevato per 30 secondi.",
+        "Eleonora, prova a fare il moonwalk.",
+        "Eleonora, canta una canzone mentre fai 10 piegamenti.",
+        "Eleonora, balla come se fossi in un film di Bollywood.",
+        "Eleonora, fai 10 squat.",
+        "Eleonora, fai 15 flessioni con una mano sollevata.",
+        "Eleonora, fai 20 salti sul posto.",
+        "Eleonora, imita un uccello per 1 minuto.",
+        "Eleonora, fai 10 salti con le ginocchia al petto.",
+        "Eleonora, fai 10 flessioni."
+      ],
+      // Aggiungi qui penitenze per gli altri nomi
+    };
 
-        function acceptChallenge() {
-            const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
-            document.getElementById("challenge-result").innerText = `La tua sfida: ${randomChallenge}`;
-        }
+    function startGame() {
+      let selectedName = document.getElementById("name-selector").value;
+      if (selectedName) {
+        document.getElementById("selected-name").innerText = `${selectedName}, sei pronto per la sfida!`;
+        document.getElementById("name-selection-container").style.display = "none";
+        document.getElementById("game-container").style.display = "block";
+      } else {
+        alert("Per favore, scegli un nome da supereroe!");
+      }
+    }
 
-        function declineChallenge() {
-            const randomPenalty = penalties[Math.floor(Math.random() * penalties.length)];
-            document.getElementById("challenge-result").innerText = `La tua penitenza: ${randomPenalty}`;
-        }
-    </script>
+    function startChallenge() {
+      let selectedName = document.getElementById("name-selector").value;
+      const randomChallenge = challenges[selectedName][Math.floor(Math.random() * challenges[selectedName].length)];
+      document.getElementById("challenge-result").innerText = `La tua sfida: ${randomChallenge}`;
+      document.getElementById("game-container").style.display = "none";
+      document.getElementById("challenge-container").style.display = "block";
+    }
+
+    function declineChallenge() {
+      let selectedName = document.getElementById("name-selector").value;
+      const randomPenalty = penalties[selectedName][Math.floor(Math.random() * penalties[selectedName].length)];
+      document.getElementById("challenge-result").innerText = `La tua penitenza: ${randomPenalty}`;
+      document.getElementById("game-container").style.display = "none";
+      document.getElementById("challenge-container").style.display = "block";
+    }
+
+    function backToSelection() {
+      document.getElementById("challenge-container").style.display = "none";
+      document.getElementById("name-selection-container").style.display = "block";
+    }
+  </script>
+
 </body>
 </html>
+
