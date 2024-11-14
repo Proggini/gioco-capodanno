@@ -61,8 +61,8 @@
         </select>
 
         <div>
-            <button onclick="mostraRegolamento()">Regolamento</button>
-            <button onclick="iniziaSfida()">Inizia la Sfida</button>
+            <button id="regolamentoBtn" onclick="mostraRegolamento()">Regolamento</button>
+            <button id="iniziaBtn" onclick="iniziaSfida()">Inizia la Sfida</button>
         </div>
 
         <div id="regolamento">
@@ -92,6 +92,7 @@
     <script>
         let puntiTotali = 0;
         let personaggioSelezionato = '';
+        let sfide;
 
         const sfide = {
                         Francesco: {
@@ -589,12 +590,14 @@ dimostra: [
     { descrizione: "Imita un personaggio storico.", punti: 10 }
 ]
             },
- 
+
+        // Funzione per visualizzare il regolamento
         function mostraRegolamento() {
             const regolamento = document.getElementById('regolamento');
             regolamento.style.display = regolamento.style.display === 'none' ? 'block' : 'none';
         }
 
+        // Funzione per iniziare il gioco
         function iniziaSfida() {
             const personaggio = document.getElementById('personaggio').value;
             if (!personaggio) {
@@ -602,25 +605,29 @@ dimostra: [
                 return;
             }
             personaggioSelezionato = personaggio;
+            sfide = allSfide[personaggio]; // Otteniamo le sfide del personaggio selezionato
             document.getElementById('sfida').style.display = 'block';
-            mostraSfida(personaggio);
+            mostraSfida();
         }
 
-        function mostraSfida(personaggio) {
-            const sfida = sfide[personaggio][Math.floor(Math.random() * 3)];
+        // Mostra una sfida casuale
+        function mostraSfida() {
+            const sfida = sfide[Math.floor(Math.random() * sfide.length)];
             document.getElementById('nomeSfida').innerText = sfida.tipo;
             document.getElementById('descrizioneSfida').innerText = sfida.descrizione;
             document.getElementById('sfida').setAttribute("data-punti", sfida.punti);
         }
 
+        // Raccogli i punti
         function raccogliPunti() {
             const punti = parseInt(document.getElementById('sfida').getAttribute("data-punti"));
             puntiTotali += punti;
             document.getElementById('puntiTotali').innerText = puntiTotali;
             checkVittoria();
-            mostraSfida(personaggioSelezionato);
+            mostraSfida(); // Mostra una nuova sfida
         }
 
+        // Aggiorna i punti per le varie azioni
         function accettaSfida() {
             aggiornaPunti(5);
         }
@@ -633,12 +640,14 @@ dimostra: [
             aggiornaPunti(10);
         }
 
+        // Funzione per aggiornare i punti
         function aggiornaPunti(punti) {
             puntiTotali += punti;
             document.getElementById('puntiTotali').innerText = puntiTotali;
             checkVittoria();
         }
 
+        // Verifica se qualcuno ha vinto
         function checkVittoria() {
             if (puntiTotali >= 50) {
                 document.getElementById('vittoria').innerText = "Complimenti! Hai vinto il gioco!";
