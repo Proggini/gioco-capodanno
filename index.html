@@ -94,7 +94,7 @@
         let personaggioSelezionato = '';
         let sfide;
 
-        const sfide = {
+        const allSfide = {
  Francesco: {
     accetta: [
         { tipo: "Accetta la sfida", descrizione: "Imita un personaggio famoso.", punti: 5 },
@@ -573,6 +573,7 @@ Alessandro: {
         { tipo: "Dimostra chi sei", descrizione: "Imita un attore famoso per 30 secondi.", punti: 10 }
     ]
 }
+
         // Funzione per visualizzare il regolamento
         function mostraRegolamento() {
             const regolamento = document.getElementById('regolamento');
@@ -581,7 +582,12 @@ Alessandro: {
 
         // Funzione per iniziare il gioco
         function iniziaSfida() {
-            const personaggio = document.getElementById('personaggio').value;
+            const personaggioElement = document.getElementById('personaggio');
+            if (!personaggioElement) {
+                alert("Elemento personaggio non trovato!");
+                return;
+            }
+            const personaggio = personaggioElement.value;
             if (!personaggio) {
                 alert("Per favore seleziona un personaggio!");
                 return;
@@ -594,6 +600,8 @@ Alessandro: {
 
         // Mostra una sfida casuale
         function mostraSfida() {
+            if (!sfide || sfide.length === 0) return; // Aggiungi controllo per evitare errori se sfide è vuoto
+
             const sfida = sfide[Math.floor(Math.random() * sfide.length)];
             document.getElementById('nomeSfida').innerText = sfida.tipo;
             document.getElementById('descrizioneSfida').innerText = sfida.descrizione;
@@ -634,8 +642,13 @@ Alessandro: {
             if (puntiTotali >= 50) {
                 document.getElementById('vittoria').innerText = "Complimenti! Hai vinto il gioco!";
                 document.getElementById('sfida').style.display = 'none';
+                // Blocca altre azioni se il gioco è finito
+                document.getElementById('accettaSfida').disabled = true;
+                document.getElementById('rifiutaSfida').disabled = true;
+                document.getElementById('dimostraSfida').disabled = true;
             }
         }
     </script>
+
 </body>
 </html>
