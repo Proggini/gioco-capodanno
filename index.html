@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -42,10 +42,11 @@
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Benvenuto, è l'ora di entrare in scena!</h1>
         <p>Scegli il tuo personaggio e inizia a giocare.</p>
-        
+
         <select id="personaggio">
             <option value="">-- Seleziona Personaggio --</option>
             <option value="Francesco">Francesco</option>
@@ -58,17 +59,19 @@
             <option value="Federico">Federico</option>
             <option value="Alessandro">Alessandro</option>
         </select>
-        
+
         <div>
             <button onclick="mostraRegolamento()">Regolamento</button>
             <button onclick="iniziaSfida()">Inizia la Sfida</button>
         </div>
-        
+
         <div id="regolamento">
             <h2>Regolamento del Gioco</h2>
-            <p>Ogni personaggio ha tre tipi di sfida: <b>Accetta la sfida</b>, <b>Rifiuta la sfida</b>, e <b>Dimostra chi sei</b>. Se completi con successo le sfide, guadagni punti: <b>5 punti</b> per "Accetta la sfida", <b>2 punti</b> per "Rifiuta la sfida", e <b>10 punti</b> per "Dimostra chi sei". Il primo a raggiungere 50 punti vince!</p>
+            <p>Ogni personaggio ha tre tipi di sfida: <b>Accetta la sfida</b>, <b>Rifiuta la sfida</b>, e <b>Dimostra chi sei</b>.
+            Se completi con successo le sfide, guadagni punti: <b>5 punti</b> per "Accetta la sfida", <b>2 punti</b> per "Rifiuta la sfida", e <b>10 punti</b> per "Dimostra chi sei".
+            Il primo a raggiungere 50 punti vince!</p>
         </div>
-        
+
         <div id="sfida">
             <h2 id="nomeSfida"></h2>
             <p id="descrizioneSfida"></p>
@@ -79,7 +82,7 @@
             </div>
             <button onclick="raccogliPunti()">Raccogli i tuoi punti</button>
         </div>
-        
+
         <div id="punteggio">
             <h2>Punti Totali: <span id="puntiTotali">0</span></h2>
             <p id="vittoria"></p>
@@ -90,7 +93,7 @@
         let puntiTotali = 0;
 
         const sfide = {
-            Francesco: {
+                        Francesco: {
                accetta: [
     { descrizione: "Imita un personaggio famoso.", punti: 5 },
     { descrizione: "Racconta una barzelletta in rima.", punti: 5 },
@@ -255,6 +258,7 @@ dimostra: [
     { descrizione: "Dì il tuo nome in modo divertente.", punti: 10 }
 ]
             },
+			Matilde: { 
 			 accetta: [
     { descrizione: "Imita una scena di una commedia.", punti: 5 },
     { descrizione: "Fingi di essere un personaggio dei cartoni animati.", punti: 5 },
@@ -309,6 +313,7 @@ dimostra: [
     { descrizione: "Fai 10 addominali.", punti: 10 }
 ]
             },
+			Angelo: { 
 			 accetta: [
     { descrizione: "Fingi di essere un cantante famoso.", punti: 5 },
     { descrizione: "Fai una coreografia di danza.", punti: 5 },
@@ -363,6 +368,7 @@ dimostra: [
     { descrizione: "Parla del tuo sogno più ambizioso.", punti: 10 }
 ]
             },
+			Rebecca: {  
 		accetta: [
     { descrizione: "Fai una mimica di una scena da film d'azione.", punti: 5 },
     { descrizione: "Imita un cantante famoso per 30 secondi.", punti: 5 },
@@ -583,7 +589,6 @@ dimostra: [
 ]
             },
         };
-
         function mostraRegolamento() {
             const regolamento = document.getElementById('regolamento');
             regolamento.style.display = regolamento.style.display === 'none' ? 'block' : 'none';
@@ -600,9 +605,8 @@ dimostra: [
         }
 
         function mostraSfida(personaggio) {
-            const tipoSfida = Math.random() < 0.33 ? "accetta" : (Math.random() < 0.5 ? "rifiuta" : "dimostra");
-            const sfida = sfide[personaggio][tipoSfida][Math.floor(Math.random() * 15)];
-            document.getElementById('nomeSfida').innerText = tipoSfida === "accetta" ? "Accetta la sfida" : tipoSfida === "rifiuta" ? "Rifiuta la sfida" : "Dimostra chi sei";
+            const sfida = sfide[personaggio][Math.floor(Math.random() * 3)];
+            document.getElementById('nomeSfida').innerText = sfida.tipo;
             document.getElementById('descrizioneSfida').innerText = sfida.descrizione;
             document.getElementById('sfida').setAttribute("data-punti", sfida.punti);
         }
@@ -615,9 +619,17 @@ dimostra: [
             mostraSfida(document.getElementById('personaggio').value);
         }
 
-        function accettaSfida() { aggiornaPunti(5); }
-        function rifiutaSfida() { aggiornaPunti(2); }
-        function dimostraSfida() { aggiornaPunti(10); }
+        function accettaSfida() {
+            aggiornaPunti(5);
+        }
+
+        function rifiutaSfida() {
+            aggiornaPunti(2);
+        }
+
+        function dimostraSfida() {
+            aggiornaPunti(10);
+        }
 
         function aggiornaPunti(punti) {
             puntiTotali += punti;
