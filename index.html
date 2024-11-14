@@ -42,11 +42,10 @@
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Benvenuto, è l'ora di entrare in scena!</h1>
         <p>Scegli il tuo personaggio e inizia a giocare.</p>
-
+        
         <select id="personaggio">
             <option value="">-- Seleziona Personaggio --</option>
             <option value="Francesco">Francesco</option>
@@ -59,19 +58,17 @@
             <option value="Federico">Federico</option>
             <option value="Alessandro">Alessandro</option>
         </select>
-
+        
         <div>
-            <button id="regolamentoBtn" onclick="mostraRegolamento()">Regolamento</button>
-            <button id="iniziaBtn" onclick="iniziaSfida()">Inizia la Sfida</button>
+            <button onclick="mostraRegolamento()">Regolamento</button>
+            <button onclick="iniziaSfida()">Inizia la Sfida</button>
         </div>
-
+        
         <div id="regolamento">
             <h2>Regolamento del Gioco</h2>
-            <p>Ogni personaggio ha tre tipi di sfida: <b>Accetta la sfida</b>, <b>Rifiuta la sfida</b>, e <b>Dimostra chi sei</b>.
-            Se completi con successo le sfide, guadagni punti: <b>5 punti</b> per "Accetta la sfida", <b>2 punti</b> per "Rifiuta la sfida", e <b>10 punti</b> per "Dimostra chi sei".
-            Il primo a raggiungere 50 punti vince!</p>
+            <p>Ogni personaggio ha tre tipi di sfida: <b>Accetta la sfida</b>, <b>Rifiuta la sfida</b>, e <b>Dimostra chi sei</b>. Se completi con successo le sfide, guadagni punti: <b>5 punti</b> per "Accetta la sfida", <b>2 punti</b> per "Rifiuta la sfida", e <b>10 punti</b> per "Dimostra chi sei". Il primo a raggiungere 50 punti vince!</p>
         </div>
-
+        
         <div id="sfida">
             <h2 id="nomeSfida"></h2>
             <p id="descrizioneSfida"></p>
@@ -82,7 +79,7 @@
             </div>
             <button onclick="raccogliPunti()">Raccogli i tuoi punti</button>
         </div>
-
+        
         <div id="punteggio">
             <h2>Punti Totali: <span id="puntiTotali">0</span></h2>
             <p id="vittoria"></p>
@@ -91,564 +88,92 @@
 
     <script>
         let puntiTotali = 0;
-        let personaggioSelezionato = '';
-        let sfide;
 
-        const allSfide = {
- Francesco: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Racconta una barzelletta in rima.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Disegna qualcosa in 30 secondi senza guardare il foglio.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone a caso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Siediti per 1 minuto senza parlare.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Mima il tuo animale preferito.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla velocemente per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una poesia inventata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Crea una storia partendo da 3 parole casuali.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Disegna una faccia sorridente in modo divertente.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Trova 3 oggetti gialli nella stanza.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un pirata per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una smorfia esagerata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Inventa una parola e usala in una frase.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un'azione quotidiana.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un sorriso senza mostrare i denti.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Alza una mano e mantieni il sorriso.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Controlla il tuo battito cardiaco per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Alza la mano destra e tocca il naso con l'altra.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Dì 5 numeri in ordine crescente.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Afferra un oggetto a caso nella stanza.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Tocca i piedi senza piegare le ginocchia.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di dormire per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Guarda fisso un oggetto per 20 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Gesticola per raccontare una storia.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Batti le mani tre volte.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Respira profondamente 3 volte.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un supereroe.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Prendi una posa divertente.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti e osserva in silenzio per 5 secondi.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 squat in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di un sogno ricorrente che hai.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta un episodio divertente della tua infanzia.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Esegui una capriola.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un salto mortale immaginario.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita il movimento di un animale in 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una dichiarazione di 30 secondi su chi sei.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Completa un indovinello difficile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Descrivi un'avventura che sogni di vivere.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta il tuo film preferito e perché.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Descrivi un viaggio che vuoi fare.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Ripeti una frase difficile per 10 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Completa una lista di 10 cose che ti piacciono.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Spiega una tua passione in 30 secondi.", punti: 10 }
-    ]
-}
+        const sfide = {
+            Francesco: {
+                accetta: [
+                    { descrizione: "Recita una poesia inventata per almeno 30 secondi.", punti: 5 },
+                    { descrizione: "Mima il tuo film preferito senza parole.", punti: 5 },
+                    // ... (altre sfide per 'Francesco' sotto la categoria 'accetta')
+                ],
+                rifiuta: [
+                    { descrizione: "Siediti e fai finta di dormire.", punti: 2 },
+                    { descrizione: "Ignora una conversazione intorno a te.", punti: 2 },
+                    // ... (altre sfide per 'Francesco' sotto la categoria 'rifiuta')
+                ],
+                dimostra: [
+                    { descrizione: "Mangia un peperoncino piccante senza bere acqua.", punti: 10 },
+                    { descrizione: "Fai 10 flessioni o squat in 1 minuto.", punti: 10 },
+                    // ... (altre sfide per 'Francesco' sotto la categoria 'dimostra')
+                ]
+            },
             Rita: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Fai una danza improvvisata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita il tuo animale domestico.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Dichiara il tuo colore preferito in modo originale.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un gioco di parole per 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Mima una scena di un film romantico.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta il ritornello di una canzone famosa.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una poesia inventata con parole a caso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un disegno in 30 secondi di un mostro.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un personaggio di un cartone animato.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Siediti su una gamba per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Crea un nome per un nuovo supereroe.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla con un accento diverso per 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita il movimento di un personaggio famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Disegna un oggetto che rappresenti il futuro.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Inventa una breve storia su un'avventura nello spazio.", punti: 5 }
-    ],
+                accetta: [
+                    { descrizione: "Fai un balletto divertente per 30 secondi.", punti: 5 },
+                    { descrizione: "Imita un gatto che miagola.", punti: 5 },
+                    // ... (altre sfide per 'Rita' sotto la categoria 'accetta')
+                ],
+                rifiuta: [
+                    { descrizione: "Dì 'no' con gentilezza per 10 volte.", punti: 2 },
+                    { descrizione: "Sorridi per 30 secondi senza parlare.", punti: 2 },
+                    // ... (altre sfide per 'Rita' sotto la categoria 'rifiuta')
+                ],
+                dimostra: [
+                    { descrizione: "Mantieni l'equilibrio su un piede per 1 minuto.", punti: 10 },
+                    { descrizione: "Racconta un segreto imbarazzante della tua infanzia.", punti: 10 },
+                    // ... (altre sfide per 'Rita' sotto la categoria 'dimostra')
+                ]
+            },
+            // Inserisci sfide per Giulia, Matilde, Angelo, Rebecca, Eleonora, Federico, Alessandro seguendo lo stesso formato
+        };
 
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Rimani in piedi per 1 minuto senza muoverti.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Pensa a qualcosa di divertente e mantieni una faccia seria.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Alza le braccia per 20 secondi senza abbassarle.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un salto sul posto.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Osserva un oggetto per 1 minuto senza parlare.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Gira in cerchio per 20 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Disegna una figura geometrica senza sollevare la matita.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Afferra un oggetto a caso e descrivilo.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Controlla il tuo battito cardiaco per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una smorfia per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Stai in piedi con una gamba sollevata per 30 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Sorridi mentre pensi a qualcosa di triste.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un applauso a te stesso.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita una figura storica famosa.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Tocca le punte dei piedi senza piegare le ginocchia.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 piegamenti.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una presentazione di 1 minuto su un argomento casuale.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Esegui 10 saltelli.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta un tuo sogno più strano.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Descrivi la tua giornata ideale.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di un'avventura che hai vissuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un personaggio del passato.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Spiega come risolvere un problema difficile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Descrivi una situazione imbarazzante che ti è successa.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 saltelli sul posto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla in rima per 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta una storia divertente usando 5 parole casuali.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita una scena famosa di un film.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un discorso motivazionale di 30 secondi.", punti: 10 }
-    ]
-}
-           Giulia: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone a caso con voce strana.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una coreografia su una canzone pop.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio dei cartoni animati.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un disegno con i piedi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Racconta una barzelletta a tema animali.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un robot per 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una faccia buffa per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai finta di essere un supereroe per 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita una scena di un film d'azione.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un disegno con una sola mano.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una poesia inventata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un pirata per 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 flessioni.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Inventa un ballo e insegnalo.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Mima una scena famosa del cinema.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una smorfia esagerata.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una piroetta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un animale.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il movimento di un uccello.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di camminare come un papero.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti in una posizione strana.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Gesticola mentre racconti una storia.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Alza una mano e mantieni il sorriso.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una giravolta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita un personaggio famoso.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una faccia da mostro.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Parla in modo buffo per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai 10 saltelli.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Tocca il naso con la lingua.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai 15 piegamenti.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Crea una presentazione di te stessa in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta un'avventura incredibile che hai vissuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla della tua passione più grande.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 20 salti sul posto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un discorso motivazionale di 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita una scena di film d'azione.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta una storia divertente su di te.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Esegui una prova di coraggio.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta un episodio buffo della tua vita.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 piegamenti con una mano.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Spiega in 30 secondi cosa ti rende speciale.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Descrivi un'avventura che sogni di vivere.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita una scena famosa di un film d'azione.", punti: 10 }
-    ]
-}
-        Matilde: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Fai un salto mortale (immaginario).", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone ad alta voce.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Mima un animale marino.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Racconta una storia da brividi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una poesia che ti piace.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai finta di essere un astronauta.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Crea una nuova danza e falle vedere agli altri.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Mima una scena di un film di avventura.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Scegli una canzone e canta il ritornello.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 piegamenti in 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita una scena di un film di supereroi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Inventa una canzone su un argomento a caso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla velocemente per 1 minuto.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Fai 5 salti sul posto.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una faccia buffa per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti e osserva senza parlare.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un movimento con il corpo.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Alza una mano e mantieni il sorriso.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Tocca le tue punte dei piedi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Respira profondamente per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita un personaggio di un film.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai 5 saltelli.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un salto a testa in giù.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un movimento strano con le braccia.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita un animale.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Racconta una barzelletta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il movimento di un pesce.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai una presentazione di te in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 15 flessioni.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Descrivi un'avventura che sogni di vivere.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un personaggio di un film d'azione.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di un sogno ricorrente.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla del tuo hobby preferito.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta una storia divertente di quando eri piccolo.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita il tuo cantante preferito.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 squat in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di un sogno da realizzare.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un discorso motivazionale.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di una persona che ti ispira.", punti: 10 }
-    ]
-}
-        Angelo: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Fai il verso di un lupo.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Racconta una barzelletta senza ridere.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 flessioni.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un supereroe.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Mima il tuo sport preferito.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 20 saltelli sul posto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una poesia inventata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita una scena di un film d'azione.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Racconta un'avventura divertente che hai vissuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una smorfia divertente.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone a caso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un robot per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Racconta una storia misteriosa.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un salto mortale (immaginario).", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita il verso di un uccello.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di una capra.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un robot.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il cammino di un cane.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai 5 saltelli.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti per 10 secondi senza parlare.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un cavallo.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il cammino di un elefante.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Gesticola mentre racconti una storia.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Sorridi senza mostrare i denti.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il movimento di un pesce.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di una rana.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Batti le mani tre volte.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una faccia da mostro.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una giravolta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una smorfia.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai 20 flessioni.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla per 1 minuto di un viaggio che vorresti fare.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una dichiarazione di 30 secondi su chi sei.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Crea una presentazione di te in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla del tuo sogno più grande.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un salto mortale immaginario.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita una scena di un film di supereroi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 15 piegamenti.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un'azione quotidiana.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta una storia che ti è successa di divertente.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di un libro che ti ha ispirato.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un discorso motivazionale.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Esegui un compito che ti sfida.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Descrivi una giornata ideale.", punti: 10 }
-    ]
-}
-Rebecca: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Fai una danza improvvisata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita il tuo animale preferito.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un pirata per 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una battuta divertente.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta il ritornello di una canzone qualsiasi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una presentazione del tuo personaggio ideale.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Racconta una barzelletta.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla velocemente per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita una scena da un film d'azione.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un salto mortale immaginario.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 flessioni.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Siediti e racconta una storia.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 5 capriole in 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una faccia buffa per 20 secondi.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una smorfia esagerata.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un animale.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti in una posizione strana.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Tocca i piedi senza piegare le ginocchia.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai 5 giri su te stesso.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita un personaggio da un cartone animato.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un ballerino.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un astronauta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Esegui un movimento lento e drammatico.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Cerca di stare fermo per 1 minuto.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Parla come se fossi in un film romantico.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una faccia triste.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il movimento di una giraffa.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un movimento da ballerino per 10 secondi.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Esegui una sfida di resistenza fisica.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 salti sul posto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta la tua avventura più incredibile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 20 flessioni in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita una scena da un film d'azione.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Canta una canzone a scelta.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 30 secondi di discorso motivazionale.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una coreografia in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 piegamenti.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta un episodio divertente della tua vita.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 flessioni in 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un attore famoso.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un discorso su cosa ti ispira nella vita.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 2 minuti.", punti: 10 }
-    ]
-}
-        Eleonora: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Recita una poesia inventata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone a caso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Mima una scena di un film romantico.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una smorfia esagerata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla velocemente per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Disegna un cuore in 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita il verso di un animale.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un supereroe per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta un pezzo di una canzone famosa.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un passo di danza.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 flessioni in 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una battuta di un film famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un movimento buffo.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti e fai finta di dormire.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un sorriso senza mostrare i denti.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita un animale marino.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un passo di danza improvvisato.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un astronauta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Tocca il naso con la lingua.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un salto sul posto.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un supereroe.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Gesticola come se raccontassi una storia.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Alza le mani e fai finta di volare.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un uccello.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di dormire per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita un personaggio dei cartoni animati.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una faccia buffa.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai 20 flessioni in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 piegamenti.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta una storia della tua infanzia.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una capriola.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un supereroe per 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di una passione in 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 30 salti sul posto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un attore famoso.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una presentazione di te stesso.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta una barzelletta.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Canta una canzone difficile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 flessioni.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla per 1 minuto senza fermarti.", punti: 10 }
-    ]
-}
-Federico: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone a caso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una smorfia esagerata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita il verso di un animale selvaggio.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 5 capriole in 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla velocemente per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 flessioni in 1 minuto.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio dei cartoni animati.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Disegna qualcosa in 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone che ti piace.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un passo di danza improvvisato.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un supereroe.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una battuta di un film famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 salti sul posto.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un ballerino.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti e fai finta di dormire.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un cane.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Alza la mano destra e fai un passo di danza.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un sorriso senza mostrare i denti.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una faccia buffa.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un supereroe.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un pinguino.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un passo di danza improvvisato.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un uccello.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un astronauta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un salto sul posto.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Mima un'azione quotidiana.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Gesticola per raccontare una storia.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai 20 flessioni in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 piegamenti.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita una scena da un film d'azione.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una presentazione di te stesso.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Canta una canzone difficile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Completa un indovinello difficile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita il movimento di un animale selvaggio.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 30 salti sul posto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una capriola.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta una barzelletta.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 30 secondi.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 flessioni.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un attore famoso per 30 secondi.", punti: 10 }
-    ]
-}
-Alessandro: {
-    accetta: [
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio da un film d'azione.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una smorfia esagerata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 10 piegamenti.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Recita una poesia improvvisata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Parla come un pirata per 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un animale selvaggio.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai una danza improvvisata.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Canta una canzone a caso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Disegna una faccia sorridente in 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio famoso.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un salto mortale immaginario.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai un'imitazione di un supereroe.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Fai 5 capriole in 30 secondi.", punti: 5 },
-        { tipo: "Accetta la sfida", descrizione: "Imita un personaggio dei cartoni animati.", punti: 5 }
-    ],
-
-    rifiuta: [
-        { tipo: "Rifiuta la sfida", descrizione: "Fai il verso di un animale.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una faccia buffa.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Parla come un personaggio comico.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un ballerino.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il movimento di un uccello.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di essere un supereroe.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai una giravolta.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Imita il movimento di una giraffa.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai finta di dormire per 10 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un sorriso senza mostrare i denti.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Guarda fisso un oggetto per 20 secondi.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Fai un passo di danza improvvisato.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Mima un'azione quotidiana.", punti: 2 },
-        { tipo: "Rifiuta la sfida", descrizione: "Siediti e fai finta di dormire.", punti: 2 }
-    ],
-
-    dimostra: [
-        { tipo: "Dimostra chi sei", descrizione: "Fai 20 flessioni in 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 piegamenti.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Racconta un episodio divertente della tua infanzia.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Esegui una capriola.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita una scena da un film d'azione.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Parla di un sogno ricorrente che hai.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una corsa sul posto per 1 minuto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 30 secondi di danza improvvisata.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Completa un indovinello difficile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 30 salti sul posto.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai una presentazione di te stesso.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai 10 flessioni.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Canta una canzone difficile.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Fai un discorso motivazionale.", punti: 10 },
-        { tipo: "Dimostra chi sei", descrizione: "Imita un attore famoso per 30 secondi.", punti: 10 }
-    ]
-}
-
-        // Funzione per visualizzare il regolamento
         function mostraRegolamento() {
             const regolamento = document.getElementById('regolamento');
             regolamento.style.display = regolamento.style.display === 'none' ? 'block' : 'none';
         }
 
-        // Funzione per iniziare il gioco
         function iniziaSfida() {
-            const personaggioElement = document.getElementById('personaggio');
-            if (!personaggioElement) {
-                alert("Elemento personaggio non trovato!");
-                return;
-            }
-            const personaggio = personaggioElement.value;
+            const personaggio = document.getElementById('personaggio').value;
             if (!personaggio) {
                 alert("Per favore seleziona un personaggio!");
                 return;
             }
-            personaggioSelezionato = personaggio;
-            sfide = allSfide[personaggio]; // Otteniamo le sfide del personaggio selezionato
             document.getElementById('sfida').style.display = 'block';
-            mostraSfida();
+            mostraSfida(personaggio);
         }
 
-        // Mostra una sfida casuale
-        function mostraSfida() {
-            if (!sfide || sfide.length === 0) return; // Aggiungi controllo per evitare errori se sfide è vuoto
-
-            const sfida = sfide[Math.floor(Math.random() * sfide.length)];
-            document.getElementById('nomeSfida').innerText = sfida.tipo;
+        function mostraSfida(personaggio) {
+            const tipoSfida = Math.random() < 0.33 ? "accetta" : (Math.random() < 0.5 ? "rifiuta" : "dimostra");
+            const sfida = sfide[personaggio][tipoSfida][Math.floor(Math.random() * 15)];
+            document.getElementById('nomeSfida').innerText = tipoSfida === "accetta" ? "Accetta la sfida" : tipoSfida === "rifiuta" ? "Rifiuta la sfida" : "Dimostra chi sei";
             document.getElementById('descrizioneSfida').innerText = sfida.descrizione;
             document.getElementById('sfida').setAttribute("data-punti", sfida.punti);
         }
 
-        // Raccogli i punti
         function raccogliPunti() {
             const punti = parseInt(document.getElementById('sfida').getAttribute("data-punti"));
             puntiTotali += punti;
             document.getElementById('puntiTotali').innerText = puntiTotali;
             checkVittoria();
-            mostraSfida(); // Mostra una nuova sfida
+            mostraSfida(document.getElementById('personaggio').value);
         }
 
-        // Aggiorna i punti per le varie azioni
-        function accettaSfida() {
-            aggiornaPunti(5);
-        }
+        function accettaSfida() { aggiornaPunti(5); }
+        function rifiutaSfida() { aggiornaPunti(2); }
+        function dimostraSfida() { aggiornaPunti(10); }
 
-        function rifiutaSfida() {
-            aggiornaPunti(2);
-        }
-
-        function dimostraSfida() {
-            aggiornaPunti(10);
-        }
-
-        // Funzione per aggiornare i punti
         function aggiornaPunti(punti) {
             puntiTotali += punti;
             document.getElementById('puntiTotali').innerText = puntiTotali;
             checkVittoria();
         }
 
-        // Verifica se qualcuno ha vinto
         function checkVittoria() {
             if (puntiTotali >= 50) {
                 document.getElementById('vittoria').innerText = "Complimenti! Hai vinto il gioco!";
                 document.getElementById('sfida').style.display = 'none';
-                // Blocca altre azioni se il gioco è finito
-                document.getElementById('accettaSfida').disabled = true;
-                document.getElementById('rifiutaSfida').disabled = true;
-                document.getElementById('dimostraSfida').disabled = true;
             }
         }
     </script>
-
 </body>
 </html>
