@@ -91,6 +91,7 @@
 
     <script>
         let puntiTotali = 0;
+        let personaggioSelezionato = '';
 
         const sfide = {
                         Francesco: {
@@ -600,6 +601,7 @@ dimostra: [
                 alert("Per favore seleziona un personaggio!");
                 return;
             }
+            personaggioSelezionato = personaggio;
             document.getElementById('sfida').style.display = 'block';
             mostraSfida(personaggio);
         }
@@ -616,7 +618,7 @@ dimostra: [
             puntiTotali += punti;
             document.getElementById('puntiTotali').innerText = puntiTotali;
             checkVittoria();
-            mostraSfida(document.getElementById('personaggio').value);
+            mostraSfida(personaggioSelezionato);
         }
 
         function accettaSfida() {
